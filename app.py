@@ -6,7 +6,7 @@ from datetime import datetime
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="DigiDakwah - Oratorium Saintek", page_icon="🌙", layout="centered")
 
-# 2. CUSTOM CSS
+# 2. CUSTOM CSS (Mempercantik Tampilan)
 st.markdown("""
     <style>
     .main { background-color: #f8f9fa; }
@@ -16,8 +16,9 @@ st.markdown("""
         border-radius: 15px; 
         border-top: 6px solid #27ae60; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        height: 220px;
+        height: 230px;
         transition: transform 0.3s;
+        margin-bottom: 20px;
     }
     .materi-card:hover { transform: translateY(-5px); }
     .stButton>button {
@@ -54,29 +55,34 @@ if choice == "🏠 Home & Materi":
     st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
 
     st.subheader("📚 Materi Dakwah Pilihan")
-    col1, col2 = st.columns(2)
-    with col1:
+    
+    # Baris Pertama
+    row1_col1, row1_col2 = st.columns(2)
+    with row1_col1:
         st.markdown("""
             <div class="materi-card">
                 <h3 style="color:#27ae60;">📖 Fikih Ibadah</h3>
                 <p style="color:#5f6368; font-size:15px;">Panduan praktis tata cara salat dan thaharah sesuai tuntunan tarjih Muhammadiyah untuk jemaah milenial.</p>
             </div>
         """, unsafe_allow_html=True)
-    with col2:
+    with row1_col2:
         st.markdown("""
             <div class="materi-card" style="border-top-color: #e67e22;">
                 <h3 style="color:#e67e22;">📱 Adab Medsos</h3>
                 <p style="color:#5f6368; font-size:15px;">Edukasi pentingnya akhlakul karimah dalam berinteraksi di ruang virtual guna mewujudkan internet sehat.</p>
             </div>
         """, unsafe_allow_html=True)
-        with col3:
+
+    # Baris Kedua
+    row2_col1, row2_col2 = st.columns(2)
+    with row2_col1:
         st.markdown("""
             <div class="materi-card" style="border-top-color: #3498db;">
                 <h3 style="color:#3498db;">🚿 Thaharah</h3>
                 <p style="color:#5f6368; font-size:15px;">Kupas tuntas tata cara bersuci, wudhu, dan tayamum yang benar sebagai kunci utama sahnya ibadah salat.</p>
             </div>
         """, unsafe_allow_html=True)
-    with col4:
+    with row2_col2:
         st.markdown("""
             <div class="materi-card" style="border-top-color: #9b59b6;">
                 <h3 style="color:#9b59b6;">💰 Zakat & Infaq</h3>
