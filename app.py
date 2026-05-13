@@ -45,7 +45,6 @@ def load_data():
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3004/3004613.png", width=100)
     st.title("DigiDakwah")
-    # Menambahkan "🔐 Panel Admin" ke pilihan halaman
     menu = ["🏠 Home & Materi", "📺 Video Kajian", "📝 Tanya Ustadz", "🔐 Panel Admin"]
     choice = st.selectbox("Pilih Halaman:", menu)
     st.divider()
@@ -60,18 +59,37 @@ if choice == "🏠 Home & Materi":
             <p style="color:white; opacity:0.9; font-size:18px;">Pusat Edukasi Digital Oratorium Fak. Saintek UMSIDA</p>
         </div>
     """, unsafe_allow_html=True)
+
     st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
+
     st.subheader("📚 Materi Dakwah Pilihan")
+    
+    # Baris Pertama
     c1, c2 = st.columns(2)
     with c1:
         st.markdown('<div class="materi-card"><h3>📖 Fikih Ibadah</h3><p>Panduan praktis tata cara salat dan thaharah sesuai tuntunan tarjih Muhammadiyah.</p></div>', unsafe_allow_html=True)
     with c2:
         st.markdown('<div class="materi-card" style="border-top-color: #e67e22;"><h3>📱 Adab Medsos</h3><p>Edukasi pentingnya akhlakul karimah dalam berinteraksi di ruang virtual.</p></div>', unsafe_allow_html=True)
+
+    # Baris Kedua
     c3, c4 = st.columns(2)
     with c3:
         st.markdown('<div class="materi-card" style="border-top-color: #3498db;"><h3>🚿 Thaharah</h3><p>Kupas tuntas tata cara bersuci, wudhu, dan tayamum yang benar.</p></div>', unsafe_allow_html=True)
     with c4:
         st.markdown('<div class="materi-card" style="border-top-color: #9b59b6;"><h3>💰 Zakat & Infaq</h3><p>Memahami pengelolaan harta untuk pemberdayaan umat di lingkungan kampus.</p></div>', unsafe_allow_html=True)
+
+    st.write("---")
+    
+    # BAGIAN TENTANG PROGRAM (TIDAK DIHAPUS)
+    with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
+        st.write("""
+            Program ini dikelola oleh **Lembaga Dakwah Oratorium Fakultas Sains dan Teknologi UMSIDA**. 
+            Aplikasi ini bertujuan untuk mendigitalisasi layanan tanya-jawab keagamaan yang biasanya dilakukan pada kajian rutin.
+            
+            **Cara Kerja:**
+            Pertanyaan yang masuk melalui form akan direkap oleh tim Informatika dan diserahkan kepada Ustadz pembina Oratorium untuk dijawab secara berkala.
+        """)
+        st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
 
 # --- MENU 2: VIDEO KAJIAN ---
 elif choice == "📺 Video Kajian":
@@ -79,7 +97,7 @@ elif choice == "📺 Video Kajian":
     st.video("https://www.youtube.com/watch?v=zPrS0A6r_hM")
     st.info("**Kajian Hari Ini:** Adab Menuntut Ilmu di Perguruan Tinggi")
 
-# --- MENU 3: TANYA USTADZ (KHUSUS USER) ---
+# --- MENU 3: TANYA USTADZ ---
 elif choice == "📝 Tanya Ustadz":
     st.header("📝 Form Tanya Ustadz")
     st.write("Silakan ajukan pertanyaan Anda. Jawaban akan dikirimkan oleh tim Asatidz melalui WhatsApp.")
@@ -88,6 +106,7 @@ elif choice == "📝 Tanya Ustadz":
         kontak = st.text_input("Nomor WhatsApp (Contoh: 08123xxx)")
         pertanyaan = st.text_area("Tulis Pertanyaan Anda")
         submit = st.form_submit_button("Kirim ke Ustadz")
+    
     if submit:
         if nama and pertanyaan and kontak:
             new_data = {"Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Nama": nama, "Kontak": kontak, "Pertanyaan": pertanyaan}
@@ -98,32 +117,33 @@ elif choice == "📝 Tanya Ustadz":
         else:
             st.error("⚠️ Mohon lengkapi semua kolom.")
 
-# --- MENU 4: PANEL ADMIN (KHUSUS PENGURUS) ---
+# --- MENU 4: PANEL ADMIN ---
 elif choice == "🔐 Panel Admin":
     st.header("🔐 Panel Administrasi Oratorium")
-    st.write("Halaman ini khusus untuk pengurus Oratorium Saintek UMSIDA.")
     
+    # Password: admin123
     password = st.text_input("Masukkan Password Admin", type="password")
     
     if password == "admin123":
-        st.success("Selamat Datang, Admin!")
+        st.success("Akses Diterima.")
         df_admin = load_data()
         
         if not df_admin.empty:
-            st.metric("Total Pertanyaan Masuk", f"{len(df_admin)} User")
+            st.metric("Total User Bertanya", f"{len(df_admin)} Orang")
             st.divider()
             
             for index, row in df_admin.iterrows():
-                with st.expander(f"Pertanyaan dari {row['Nama']} ({row['Waktu']})"):
-                    st.write(f"**Isi Pertanyaan:**\n{row['Pertanyaan']}")
-                    st.write(f"**Kontak Jemaah:** {row['Kontak']}")
+                with st.expander(f"Dari: {row['Nama']} ({row['Waktu']})"):
+                    st.write(f"**Pertanyaan:**\n{row['Pertanyaan']}")
+                    st.write(f"**Kontak:** {row['Kontak']}")
                     
-                    # Format WA
-                    wa_number = str(row['Kontak'])
-                    if wa_number.startswith('0'): wa_number = '62' + wa_number[1:]
-                    elif wa_number.startswith('8'): wa_number = '62' + wa_number
+                    # Format nomor WhatsApp
+                    wa_num = str(row['Kontak'])
+                    if wa_num.startswith('0'): wa_num = '62' + wa_num[1:]
+                    elif wa_num.startswith('8'): wa_num = '62' + wa_num
                     
-                    wa_link = f"https://wa.me/{wa_number}?text=Assalamualaikum%20{row['Nama']},%20Admin%20DigiDakwah%20ingin%20menjawab%20pertanyaan%20Anda:%20"
+                    pesan = f"Assalamualaikum {row['Nama']}, Admin DigiDakwah ingin menjawab pertanyaan Anda: "
+                    wa_link = f"https://wa.me/{wa_num}?text={pesan}"
                     
                     st.markdown(f"""
                         <a href="{wa_link}" target="_blank">
@@ -133,6 +153,6 @@ elif choice == "🔐 Panel Admin":
                         </a>
                     """, unsafe_allow_html=True)
         else:
-            st.info("Belum ada data pertanyaan yang masuk.")
+            st.info("Belum ada pertanyaan masuk.")
     elif password != "":
         st.error("Password Salah!")
