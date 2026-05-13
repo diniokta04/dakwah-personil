@@ -33,13 +33,18 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Fungsi Database
+# Fungsi Database (Menambah Kolom Status)
 DB_FILE = "data_dakwah.csv"
 def load_data():
     if os.path.exists(DB_FILE):
-        try: return pd.read_csv(DB_FILE)
-        except: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
-    else: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
+        df = pd.read_csv(DB_FILE)
+        # Jika kolom Status belum ada (untuk file lama), tambahkan otomatis
+        if "Status" not in df.columns:
+            df["Status"] = "Belum Dijawab"
+            df.to_csv(DB_FILE, index=False)
+        return df
+    else:
+        return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan", "Status"])
 
 # 3. SIDEBAR NAVIGATION
 with st.sidebar:
@@ -61,17 +66,14 @@ if choice == "🏠 Home & Materi":
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
-
     st.subheader("📚 Materi Dakwah Pilihan")
     
-    # Baris Pertama
     c1, c2 = st.columns(2)
     with c1:
         st.markdown('<div class="materi-card"><h3>📖 Fikih Ibadah</h3><p>Panduan praktis tata cara salat dan thaharah sesuai tuntunan tarjih Muhammadiyah.</p></div>', unsafe_allow_html=True)
     with c2:
         st.markdown('<div class="materi-card" style="border-top-color: #e67e22;"><h3>📱 Adab Medsos</h3><p>Edukasi pentingnya akhlakul karimah dalam berinteraksi di ruang virtual.</p></div>', unsafe_allow_html=True)
 
-    # Baris Kedua
     c3, c4 = st.columns(2)
     with c3:
         st.markdown('<div class="materi-card" style="border-top-color: #3498db;"><h3>🚿 Thaharah</h3><p>Kupas tuntas tata cara bersuci, wudhu, dan tayamum yang benar.</p></div>', unsafe_allow_html=True)
@@ -79,15 +81,10 @@ if choice == "🏠 Home & Materi":
         st.markdown('<div class="materi-card" style="border-top-color: #9b59b6;"><h3>💰 Zakat & Infaq</h3><p>Memahami pengelolaan harta untuk pemberdayaan umat di lingkungan kampus.</p></div>', unsafe_allow_html=True)
 
     st.write("---")
-    
-    # BAGIAN TENTANG PROGRAM (TIDAK DIHAPUS)
     with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
         st.write("""
             Program ini dikelola oleh **Lembaga Dakwah Oratorium Fakultas Sains dan Teknologi UMSIDA**. 
             Aplikasi ini bertujuan untuk mendigitalisasi layanan tanya-jawab keagamaan yang biasanya dilakukan pada kajian rutin.
-            
-            **Cara Kerja:**
-            Pertanyaan yang masuk melalui form akan direkap oleh tim Informatika dan diserahkan kepada Ustadz pembina Oratorium untuk dijawab secara berkala.
         """)
         st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
 
@@ -95,12 +92,11 @@ if choice == "🏠 Home & Materi":
 elif choice == "📺 Video Kajian":
     st.header("📺 Arsip Video Kajian")
     st.video("https://www.youtube.com/watch?v=zPrS0A6r_hM")
-    st.info("**Kajian Hari Ini:** Adab Menuntut Ilmu di Perguruan Tinggi")
 
 # --- MENU 3: TANYA USTADZ ---
 elif choice == "📝 Tanya Ustadz":
     st.header("📝 Form Tanya Ustadz")
-    st.write("Silakan ajukan pertanyaan Anda. Jawaban akan dikirimkan oleh tim Asatidz melalui WhatsApp.")
+    st.write("Silakan ajukan pertanyaan Anda.")
     with st.form(key='tanya_form', clear_on_submit=True):
         nama = st.text_input("Nama Lengkap")
         kontak = st.text_input("Nomor WhatsApp (Contoh: 08123xxx)")
@@ -109,7 +105,14 @@ elif choice == "📝 Tanya Ustadz":
     
     if submit:
         if nama and pertanyaan and kontak:
-            new_data = {"Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Nama": nama, "Kontak": kontak, "Pertanyaan": pertanyaan}
+            # Status default adalah Belum Dijawab
+            new_data = {
+                "Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+                "Nama": nama, 
+                "Kontak": kontak, 
+                "Pertanyaan": pertanyaan,
+                "Status": "Belum Dijawab"
+            }
             df = load_data()
             df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
             df.to_csv(DB_FILE, index=False)
@@ -120,8 +123,6 @@ elif choice == "📝 Tanya Ustadz":
 # --- MENU 4: PANEL ADMIN ---
 elif choice == "🔐 Panel Admin":
     st.header("🔐 Panel Administrasi Oratorium")
-    
-    # Password: admin123
     password = st.text_input("Masukkan Password Admin", type="password")
     
     if password == "admin123":
@@ -129,29 +130,51 @@ elif choice == "🔐 Panel Admin":
         df_admin = load_data()
         
         if not df_admin.empty:
-            st.metric("Total User Bertanya", f"{len(df_admin)} Orang")
+            # Filter tampilan
+            filter_status = st.radio("Tampilkan:", ["Semua", "Belum Dijawab", "Sudah Dijawab"], horizontal=True)
+            
+            if filter_status != "Semua":
+                df_filtered = df_admin[df_admin["Status"] == filter_status]
+            else:
+                df_filtered = df_admin
+
+            st.metric("Jumlah Pertanyaan", f"{len(df_filtered)} User")
             st.divider()
             
-            for index, row in df_admin.iterrows():
-                with st.expander(f"Dari: {row['Nama']} ({row['Waktu']})"):
+            for index, row in df_filtered.iterrows():
+                # Warna label status
+                status_color = "🔴" if row['Status'] == "Belum Dijawab" else "🟢"
+                
+                with st.expander(f"{status_color} Dari: {row['Nama']} ({row['Waktu']})"):
                     st.write(f"**Pertanyaan:**\n{row['Pertanyaan']}")
                     st.write(f"**Kontak:** {row['Kontak']}")
+                    st.write(f"**Status Saat Ini:** {row['Status']}")
                     
-                    # Format nomor WhatsApp
-                    wa_num = str(row['Kontak'])
-                    if wa_num.startswith('0'): wa_num = '62' + wa_num[1:]
-                    elif wa_num.startswith('8'): wa_num = '62' + wa_num
+                    col_wa, col_mark = st.columns([1, 1])
                     
-                    pesan = f"Assalamualaikum {row['Nama']}, Admin DigiDakwah ingin menjawab pertanyaan Anda: "
-                    wa_link = f"https://wa.me/{wa_num}?text={pesan}"
+                    with col_wa:
+                        # Format WhatsApp
+                        wa_num = str(row['Kontak'])
+                        if wa_num.startswith('0'): wa_num = '62' + wa_num[1:]
+                        elif wa_num.startswith('8'): wa_num = '62' + wa_num
+                        
+                        pesan = f"Assalamualaikum {row['Nama']}, Admin DigiDakwah ingin menjawab pertanyaan Anda: "
+                        wa_link = f"https://wa.me/{wa_num}?text={pesan}"
+                        
+                        st.markdown(f"""
+                            <a href="{wa_link}" target="_blank">
+                                <button style="background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">
+                                    💬 Balas & Buka WA
+                                </button>
+                            </a>
+                        """, unsafe_allow_html=True)
                     
-                    st.markdown(f"""
-                        <a href="{wa_link}" target="_blank">
-                            <button style="background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                                💬 Balas via WhatsApp
-                            </button>
-                        </a>
-                    """, unsafe_allow_html=True)
+                    with col_mark:
+                        if st.button(f"Tandai Sudah Dijawab", key=f"btn_{index}"):
+                            df_admin.at[index, "Status"] = "Sudah Dijawab"
+                            df_admin.to_csv(DB_FILE, index=False)
+                            st.rerun()
+
         else:
             st.info("Belum ada pertanyaan masuk.")
     elif password != "":
