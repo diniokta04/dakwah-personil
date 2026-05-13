@@ -7,18 +7,20 @@ from datetime import datetime
 st.set_page_config(page_title="DigiDakwah App", page_icon="🌙", layout="centered")
 
 # Custom CSS untuk mempercantik tampilan
+# PERBAIKAN: Ganti unsafe_allow_stdio menjadi unsafe_allow_html
 st.markdown("""
     <style>
     .main { background-color: #f5f7f9; }
-    .stButton>button { width: 100%; background-color: #27ae60; color: white; }
-    .quote-box { padding: 20px; border-left: 5px solid #27ae60; background-color: #e8f5e9; font-style: italic; }
+    .stButton>button { width: 100%; background-color: #27ae60; color: white; border-radius: 8px; }
+    .quote-box { padding: 20px; border-left: 5px solid #27ae60; background-color: #e8f5e9; font-style: italic; border-radius: 5px; }
     </style>
-    """, unsafe_allow_stdio=True)
+    """, unsafe_allow_html=True)
 
 # 2. Header & Kutipan
 st.title("🌙 DigiDakwah")
 st.subheader("Platform Dakwah Digital Berbasis Data")
-st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_stdio=True)
+# PERBAIKAN: Ganti unsafe_allow_stdio menjadi unsafe_allow_html
+st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
 
 # 3. Navigasi Menu
 menu = ["Home & Materi", "Video Kajian", "Tanya Ustadz (Admin)"]
@@ -39,7 +41,8 @@ if choice == "Home & Materi":
 # --- MENU 2: VIDEO KAJIAN ---
 elif choice == "Video Kajian":
     st.header("Video Kajian Terbaru")
-    st.video("https://www.youtube.com/watch?v=zPrS0A6r_hM") # Kamu bisa ganti link ini
+    # Kamu bisa ganti link ini dengan video dakwah favoritmu
+    st.video("https://www.youtube.com/watch?v=zPrS0A6r_hM") 
     st.caption("Kajian Singkat: Adab Menuntut Ilmu")
 
 # --- MENU 3: TANYA USTADZ ---
@@ -52,7 +55,11 @@ elif choice == "Tanya Ustadz (Admin)":
     # Fungsi Load Data
     def load_data():
         if os.path.exists(DB_FILE):
-            return pd.read_csv(DB_FILE)
+            try:
+                return pd.read_csv(DB_FILE)
+            except:
+                # Jika file rusak/kosong, buat baru
+                return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
         else:
             return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
 
@@ -72,13 +79,15 @@ elif choice == "Tanya Ustadz (Admin)":
                 "Pertanyaan": pertanyaan
             }
             df = load_data()
+            # Gunakan pd.DataFrame([new_data]) untuk menggabungkan data baru
             df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
             df.to_csv(DB_FILE, index=False)
-            st.success("Data berhasil disimpan ke CSV!")
+            st.success("Alhamdulillah, data berhasil disimpan!")
+            st.rerun() # Refresh agar data terbaru langsung muncul di tabel
         else:
             st.warning("Mohon isi nama dan pertanyaan.")
 
-    # Menampilkan Tabel Data (Hanya muncul di menu Admin)
+    # Menampilkan Tabel Data
     st.divider()
     st.subheader("Data Pertanyaan Masuk (Database CSV)")
     df_display = load_data()
