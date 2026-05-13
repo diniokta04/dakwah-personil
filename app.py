@@ -89,27 +89,26 @@ if choice == "🏠 Home & Materi":
         st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
 
 # --- MENU 2: VIDEO KAJIAN ---
-# --- MENU 2: VIDEO KAJIAN ---
 elif choice == "📺 Video Kajian":
-    st.header("📺 Arsip Video Kajian Oratorium")
+    st.header("📺 Video Kajian Oratorium")
     st.markdown("Dokumentasi kajian rutin dan video edukasi islami untuk mahasiswa.")
 
     # 1. CARA MENYIMPAN DATA VIDEO (Link & Keterangan)
     # Kamu bisa menambah video baru di dalam list ini
     daftar_kajian = [
         {
-            "judul": "Adab Menuntut Ilmu di Perguruan Tinggi",
-            "ustadz": "Ustadz Dr. H. Hidayatullah, M.Si.",
-            "durasi": "15:20",
-            "link": "https://www.youtube.com/watch?v=zPrS0A6r_hM",
-            "deskripsi": "Kajian ini membahas pentingnya meluruskan niat saat kuliah agar setiap tugas menjadi amal jariyah."
+            "judul": "Hadiah Allah Ketika Mengalami Kesulitan",
+            "ustadz": "Ustadz Adi Hidayat",
+            "durasi": "51.40",
+            "link": "https://youtu.be/izYUMrsvVDQ?si=lCgTf2h6PrS0c2Tf",
+            "deskripsi": "Kajian ini membahas pentingnya bersabar dan meminta pertolonagn kepada allah saat mendapat kesulitan."
         },
         {
-            "judul": "Fiqih Milenial: Menjaga Pandangan di Era Digital",
-            "ustadz": "Tim Asatidz Oratorium",
-            "durasi": "10:45",
-            "link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", # Ganti dengan link YT asli
-            "deskripsi": "Tips praktis menjaga lisan dan pandangan saat berselancar di media sosial sesuai syariat."
+            "judul": "Perbaiki Sholatmu Maka Allah Akan Permudah Urusanmu",
+            "ustadz": "Adi Hidayat",
+            "durasi": "50.00",
+            "link": "https://youtu.be/sX-kePnlgy4?si=EZJD0FeFeCMMZKNI",
+            "deskripsi": "kita sebagai umat muslih muslimah harus mengingat dan berdoa kepada allah."
         }
     ]
 
@@ -139,7 +138,7 @@ elif choice == "📝 Tanya Ustadz":
         nama = st.text_input("Nama Lengkap")
         kontak = st.text_input("Nomor WhatsApp (Contoh: 08123xxx)")
         pertanyaan = st.text_area("Tulis Pertanyaan Anda")
-        submit = st.form_submit_button("Kirim ke Ustadz")
+        submit = st.form_submit_button("Kirim")
     
     if submit:
         if nama and pertanyaan and kontak:
