@@ -141,97 +141,14 @@ elif choice == "🔐 Panel Admin":
     password = st.text_input("Password Admin", type="password")
     
     if password == "admin123":
-        # --- FITUR DOWNLOAD LAPORAN ---
-        st.subheader("📊 Laporan Statistik")
+        df_admin = load_data()
         
+        # --- TAMBAHAN FITUR LAPORAN & DOWNLOAD ---
+        st.subheader("📊 Laporan & Statistik")
         if not df_admin.empty:
             # Pastikan kolom Waktu terbaca sebagai tanggal
-            df_admin['Waktu'] = pd.to_datetime(df_admin['Waktu'])
-            
-            # Tambahkan kolom Bulan-Tahun untuk pengelompokan
-            df_admin['Bulan'] = df_admin['Waktu'].dt.strftime('%B %Y')
+            df_admin['Waktu_DT'] = pd.to_datetime(df_admin['Waktu'])
+            df_admin['Bulan'] = df_admin['Waktu_DT'].dt.strftime('%B %Y')
             
             # Hitung jumlah penanya per bulan
-            rekap_bulanan = df_admin.groupby('Bulan').size().reset_index(name='Jumlah Pertanyaan')
-            
-            col_stat1, col_stat2 = st.columns(2)
-            with col_stat1:
-                st.write("Ringkasan per Bulan:")
-                st.dataframe(rekap_bulanan, hide_index=True)
-            
-            with col_stat2:
-                # Tombol download laporan lengkap
-                csv_data = df_admin.to_csv(index=False).encode('utf-8')
-                st.download_button(
-                    label="📥 Download Laporan Lengkap (CSV)",
-                    data=csv_data,
-                    file_name=f"Laporan_DigiDakwah_{datetime.now().strftime('%Y%m%d')}.csv",
-                    mime="text/csv",
-                    help="Klik untuk mengunduh semua data pertanyaan dalam format Excel/CSV"
-                )
-        else:
-            st.warning("Data masih kosong, belum ada statistik yang bisa ditampilkan.")
-        
-        st.divider()
-        
-        # MENGGUNAKAN TABS UNTUK FITUR TAMBAHAN
-        tab_respon, tab_home, tab_video = st.tabs(["💬 Respon Pertanyaan", "🏠 Kelola Materi Home", "📺 Kelola Video"])
-
-        with tab_respon:
-            df_admin = load_data()
-            if not df_admin.empty:
-                f_status = st.radio("Filter Status:", ["Semua", "Belum Dijawab", "Sudah Dijawab"], horizontal=True)
-                df_tampil = df_admin if f_status == "Semua" else df_admin[df_admin["Status"] == f_status]
-                
-                for index, row in df_tampil.iterrows():
-                    warna = "🔴" if row['Status'] == "Belum Dijawab" else "🟢"
-                    with st.expander(f"{warna} {row['Nama']} ({row['Waktu']})"):
-                        st.write(f"**Pertanyaan:** {row['Pertanyaan']}")
-                        st.write(f"**WA:** {row['Kontak']}")
-                        cw, cd, ch = st.columns(3)
-                        with cw:
-                            wa_link = f"https://wa.me/{row['Kontak'] if not str(row['Kontak']).startswith('0') else '62'+str(row['Kontak'])[1:]}"
-                            st.markdown(f'<a href="{wa_link}" target="_blank"><button style="width:100%; background-color:#25D366; color:white; border:none; border-radius:5px; padding:5px;">💬 Balas</button></a>', unsafe_allow_html=True)
-                        with cd:
-                            if st.button("✅ Selesai", key=f"d_{index}"):
-                                df_admin.at[index, "Status"] = "Sudah Dijawab"; df_admin.to_csv(DB_FILE, index=False); st.rerun()
-                        with ch:
-                            if st.button("🗑️ Hapus", key=f"h_{index}"):
-                                df_admin.drop(index).to_csv(DB_FILE, index=False); st.rerun()
-            else:
-                st.info("Belum ada data pertanyaan.")
-
-        with tab_home:
-            st.subheader("➕ Tambah Materi Home")
-            with st.form("form_tambah_materi"):
-                new_judul = st.text_input("Judul Materi (Sertakan Emoji jika mau)")
-                new_isi = st.text_area("Deskripsi Singkat")
-                new_warna = st.color_picker("Warna Border Atas", "#27ae60")
-                if st.form_submit_button("Simpan Materi"):
-                    st.session_state.materi_data.append({"judul": new_judul, "isi": new_isi, "warna": new_warna})
-                    st.rerun()
-            
-            st.divider()
-            st.subheader("🗑️ Hapus Materi")
-            for i, m in enumerate(st.session_state.materi_data):
-                if st.button(f"Hapus {m['judul']}", key=f"del_mat_{i}"):
-                    st.session_state.materi_data.pop(i)
-                    st.rerun()
-
-        with tab_video:
-            st.subheader("➕ Tambah Video Kajian")
-            with st.form("form_tambah_video"):
-                v_judul = st.text_input("Judul Video")
-                v_link = st.text_input("Link YouTube")
-                v_ustadz = st.text_input("Nama Narasumber")
-                v_desk = st.text_area("Deskripsi")
-                if st.form_submit_button("Tambah Video"):
-                    st.session_state.video_data.append({"judul": v_judul, "link": v_link, "ustadz": v_ustadz, "deskripsi": v_desk})
-                    st.rerun()
-
-            st.divider()
-            st.subheader("🗑️ Hapus Video")
-            for i, v in enumerate(st.session_state.video_data):
-                if st.button(f"Hapus {v['judul']}", key=f"del_vid_{i}"):
-                    st.session_state.video_data.pop(i)
-                    st.rerun()
+            rekap_bulanan = df
