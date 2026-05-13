@@ -3,25 +3,46 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# 1. Konfigurasi Tampilan
-st.set_page_config(page_title="DigiDakwah App", page_icon="🌙", layout="centered")
-
-# Custom CSS untuk mempercantik tampilan
-# PERBAIKAN: Ganti unsafe_allow_stdio menjadi unsafe_allow_html
-st.markdown("""
-    <style>
-    .main { background-color: #f5f7f9; }
-    .stButton>button { width: 100%; background-color: #27ae60; color: white; border-radius: 8px; }
-    .quote-box { padding: 20px; border-left: 5px solid #27ae60; background-color: #e8f5e9; font-style: italic; border-radius: 5px; }
-    </style>
+# --- MENU 1: HOME & MATERI ---
+if choice == "Home & Materi":
+    # Membuat Header yang lebih menarik
+    st.markdown("""
+        <div style="background-color:#27ae60; padding:20px; border-radius:10px; margin-bottom:25px">
+            <h1 style="color:white; text-align:center; margin:0;">Daftar Materi Dakwah</h1>
+            <p style="color:white; text-align:center; opacity:0.9;">Tingkatkan Ilmu, Perbaiki Adab di Era Digital</p>
+        </div>
     """, unsafe_allow_html=True)
 
-# 2. Header & Kutipan
-st.title("🌙 DigiDakwah")
-st.subheader("Platform Dakwah Digital Berbasis Data")
-# PERBAIKAN: Ganti unsafe_allow_stdio menjadi unsafe_allow_html
-st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
+    # Menggunakan columns untuk tampilan kartu materi
+    col1, col2 = st.columns(2)
 
+    with col1:
+        st.markdown("""
+            <div style="background-color:white; padding:20px; border-radius:10px; border-top: 5px solid #2ecc71; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); height: 180px;">
+                <h3 style="color:#2c3e50; margin-top:0;">📖 Fikih Ibadah</h3>
+                <p style="color:#7f8c8d; font-size:14px;">Pelajari tata cara ibadah yang benar dengan panduan praktis sesuai sunnah untuk kaum muslimin di era digital.</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+            <div style="background-color:white; padding:20px; border-radius:10px; border-top: 5px solid #e67e22; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); height: 180px;">
+                <h3 style="color:#2c3e50; margin-top:0;">📱 Adab Medsos</h3>
+                <p style="color:#7f8c8d; font-size:14px;">Menjaga lisan dalam ketikan. Panduan bijak berinteraksi di ruang publik virtual sesuai tuntunan Islam.</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    # Memberikan ruang kosong
+    st.write("#")
+    
+    # Bagian Tentang Program dengan tampilan Box yang rapi
+    with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
+        st.write("""
+            Aplikasi ini dirancang khusus untuk mengintegrasikan nilai-nilai dakwah dengan efisiensi teknologi. 
+            Dengan memanfaatkan **Python** sebagai mesin utama dan **Pandas** untuk manajemen data, 
+            setiap pertanyaan jemaah dikelola secara sistematis guna memastikan pelayanan dakwah yang responsif dan terukur.
+        """)
+        st.caption("Versi 1.0.0 | Dikembangkan untuk Tugas Informatika")
 # 3. Navigasi Menu
 menu = ["Home & Materi", "Video Kajian", "Tanya Ustadz"]
 choice = st.sidebar.selectbox("Pilih Menu", menu)
