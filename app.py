@@ -50,6 +50,13 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # 3. SIDEBAR NAVIGATION
+with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
+    st.write("""
+        Aplikasi ini dikelola oleh **Tim Dakwah [Nama Ortom/Organisasi Kamu]**. 
+        Pertanyaan yang Anda ajukan akan terekam dalam sistem dan akan dijawab oleh Ustadz 
+        pada pertemuan kajian rutin berikutnya atau melalui kontak yang Anda cantumkan.
+    """)
+    st.caption("📍 Lokasi Operasional: Kampus UMSIDA & Lingkungan Dakwah Sukodono")
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3004/3004613.png", width=100) # Icon islami
     st.title("Navigasi")
