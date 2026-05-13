@@ -81,6 +81,20 @@ if choice == "🏠 Home & Materi":
     with c4:
         st.markdown('<div class="materi-card" style="border-top-color: #9b59b6;"><h3>💰 Zakat & Infaq</h3><p>Memahami pengelolaan harta untuk pemberdayaan umat di lingkungan kampus.</p></div>', unsafe_allow_html=True)
 
+ st.write("---")
+
+    with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
+
+        st.write("""
+
+            Program ini dikelola oleh **Lembaga Dakwah Oratorium Fakultas Sains dan Teknologi UMSIDA**. 
+
+            Aplikasi ini bertujuan untuk mendigitalisasi layanan tanya-jawab keagamaan yang biasanya dilakukan pada kajian rutin.
+
+        """)
+
+        st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
+
 # --- MENU 2: VIDEO KAJIAN ---
 elif choice == "📺 Video Kajian":
     st.header("📺 Video Kajian Oratorium")
