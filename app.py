@@ -141,6 +141,39 @@ elif choice == "🔐 Panel Admin":
     password = st.text_input("Password Admin", type="password")
     
     if password == "admin123":
+        # --- FITUR DOWNLOAD LAPORAN ---
+        st.subheader("📊 Laporan Statistik")
+        
+        if not df_admin.empty:
+            # Pastikan kolom Waktu terbaca sebagai tanggal
+            df_admin['Waktu'] = pd.to_datetime(df_admin['Waktu'])
+            
+            # Tambahkan kolom Bulan-Tahun untuk pengelompokan
+            df_admin['Bulan'] = df_admin['Waktu'].dt.strftime('%B %Y')
+            
+            # Hitung jumlah penanya per bulan
+            rekap_bulanan = df_admin.groupby('Bulan').size().reset_index(name='Jumlah Pertanyaan')
+            
+            col_stat1, col_stat2 = st.columns(2)
+            with col_stat1:
+                st.write("Ringkasan per Bulan:")
+                st.dataframe(rekap_bulanan, hide_index=True)
+            
+            with col_stat2:
+                # Tombol download laporan lengkap
+                csv_data = df_admin.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Download Laporan Lengkap (CSV)",
+                    data=csv_data,
+                    file_name=f"Laporan_DigiDakwah_{datetime.now().strftime('%Y%m%d')}.csv",
+                    mime="text/csv",
+                    help="Klik untuk mengunduh semua data pertanyaan dalam format Excel/CSV"
+                )
+        else:
+            st.warning("Data masih kosong, belum ada statistik yang bisa ditampilkan.")
+        
+        st.divider()
+        
         # MENGGUNAKAN TABS UNTUK FITUR TAMBAHAN
         tab_respon, tab_home, tab_video = st.tabs(["💬 Respon Pertanyaan", "🏠 Kelola Materi Home", "📺 Kelola Video"])
 
