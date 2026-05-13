@@ -68,7 +68,7 @@ elif choice == "Tanya Ustadz":
         nama = st.text_input("Nama Lengkap")
         kontak = st.text_input("WhatsApp/Email")
         pertanyaan = st.text_area("Tulis Pertanyaan Anda")
-        submit = st.form_submit_button("Kirim Ke Database")
+        submit = st.form_submit_button("Kirim")
 
     if submit:
         if nama and pertanyaan:
