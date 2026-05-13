@@ -98,8 +98,8 @@ if choice == "🏠 Home & Materi":
     # Tentang Program
     with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
         st.write("""
-            Aplikasi ini dirancang untuk mengintegrasikan nilai-nilai dakwah dengan efisiensi teknologi modern. 
-            Menggunakan **Python** sebagai mesin utama dan **Pandas** untuk manajemen data pertanyaan jemaah.
+            Teknologi hanyalah alat, namun dakwah adalah tujuan. 
+            DigiDakwah hadir untuk memastikan setiap pesan kebaikan tersampaikan dan terkelola dengan amanah.
         """)
 
 # --- MENU 2: VIDEO KAJIAN ---
