@@ -23,7 +23,7 @@ st.subheader("Platform Dakwah Digital Berbasis Data")
 st.markdown('<div class="quote-box">"Sampaikanlah dariku walau hanya satu ayat." (HR. Bukhari)</div>', unsafe_allow_html=True)
 
 # 3. Navigasi Menu
-menu = ["Home & Materi", "Video Kajian", "Tanya Ustadz (Admin)"]
+menu = ["Home & Materi", "Video Kajian", "Tanya Ustadz"]
 choice = st.sidebar.selectbox("Pilih Menu", menu)
 
 # --- MENU 1: HOME & MATERI ---
