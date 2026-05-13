@@ -106,4 +106,3 @@ elif choice == "🔐 Admin":
             if st.button("Tambah Video"):
                 st.session_state.video_list.append({"judul": v_j, "link": v_l, "ustadz": "Admin"})
                 st.success("Video Ditambahkan!")
-            
