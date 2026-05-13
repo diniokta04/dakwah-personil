@@ -46,7 +46,7 @@ elif choice == "Video Kajian":
     st.caption("Kajian Singkat: Adab Menuntut Ilmu")
 
 # --- MENU 3: TANYA USTADZ ---
-elif choice == "Tanya Ustadz (Admin)":
+elif choice == "Tanya Ustadz":
     st.header("Form Tanya Ustadz")
     
     # Database CSV Sederhana
