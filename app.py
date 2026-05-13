@@ -103,7 +103,7 @@ if choice == "🏠 Home & Materi":
         """)
 
 # --- MENU 2: VIDEO KAJIAN ---
-elif choice == "Video Kajian":
+elif choice == "📺 Video Kajian":
     st.header("📺 Video Kajian Terbaru")
     st.markdown("Tonton kajian singkat untuk menyejukkan hati hari ini.")
     
@@ -112,8 +112,8 @@ elif choice == "Video Kajian":
     st.info("**Judul:** Adab Menuntut Ilmu dalam Islam")
 
 # --- MENU 3: TANYA USTADZ ---
-elif choice == "Tanya Ustadz":
-    st.header("Form Tanya Ustadz")
+elif choice == "📝 Tanya Ustadz":
+    st.header(" Form Tanya Ustadz")
     st.write("Silakan ajukan pertanyaan Anda, data akan tersimpan secara sistematis.")
     
     DB_FILE = "data_dakwah.csv"
@@ -153,7 +153,7 @@ elif choice == "Tanya Ustadz":
 
     # Tampilan Tabel Admin
     st.divider()
-    st.subheader("📊 Data Pertanyaan Masuk")
+    st.subheader("📊 Database Pertanyaan Masuk")
     df_display = load_data()
     if not df_display.empty:
         st.dataframe(df_display, use_container_width=True)
