@@ -39,7 +39,6 @@ DB_FILE = "data_dakwah.csv"
 def load_data():
     if os.path.exists(DB_FILE):
         df = pd.read_csv(DB_FILE)
-        # Tambahkan kolom Status jika belum ada
         if "Status" not in df.columns:
             df["Status"] = "Belum Dijawab"
             df.to_csv(DB_FILE, index=False)
@@ -81,18 +80,13 @@ if choice == "🏠 Home & Materi":
     with c4:
         st.markdown('<div class="materi-card" style="border-top-color: #9b59b6;"><h3>💰 Zakat & Infaq</h3><p>Memahami pengelolaan harta untuk pemberdayaan umat di lingkungan kampus.</p></div>', unsafe_allow_html=True)
 
- st.write("---")
+    st.write("---")
 
     with st.expander("✨ Tentang Program DigiDakwah", expanded=True):
-
         st.write("""
-
             Program ini dikelola oleh **Lembaga Dakwah Oratorium Fakultas Sains dan Teknologi UMSIDA**. 
-
             Aplikasi ini bertujuan untuk mendigitalisasi layanan tanya-jawab keagamaan yang biasanya dilakukan pada kajian rutin.
-
         """)
-
         st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
 
 # --- MENU 2: VIDEO KAJIAN ---
@@ -167,7 +161,7 @@ elif choice == "🔐 Panel Admin":
             with c_filter:
                 f_status = st.radio("Filter Status:", ["Semua", "Belum Dijawab", "Sudah Dijawab"], horizontal=True)
             with c_dl:
-                st.download_button("📥 Download Laporan", df_admin.to_csv(index=False), "laporan_dakwah.csv", "text/csv")
+                st.download_button("📥 Download Laporan", df_admin.to_csv(index=False).encode('utf-8'), "laporan_dakwah.csv", "text/csv")
 
             df_tampil = df_admin if f_status == "Semua" else df_admin[df_admin["Status"] == f_status]
             
@@ -180,7 +174,7 @@ elif choice == "🔐 Panel Admin":
                     cw, cd, ch = st.columns(3)
                     with cw:
                         wa_link = f"https://wa.me/{row['Kontak'] if not str(row['Kontak']).startswith('0') else '62'+str(row['Kontak'])[1:]}"
-                        st.markdown(f'<a href="{wa_link}" target="_blank"><button style="width:100%; background-color:#25D366; color:white; border:none; border-radius:5px; padding:5px;">💬 Balas</button></a>', unsafe_allow_html=True)
+                        st.markdown(f'<a href="{wa_link}" target="_blank"><button style="width:100%; background-color:#25D366; color:white; border:none; border-radius:5px; padding:5px; cursor:pointer;">💬 Balas</button></a>', unsafe_allow_html=True)
                     with cd:
                         if st.button("✅ Selesai", key=f"d_{index}"):
                             df_admin.at[index, "Status"] = "Sudah Dijawab"
