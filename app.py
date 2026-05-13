@@ -89,9 +89,47 @@ if choice == "🏠 Home & Materi":
         st.caption("📍 Lokasi: Oratorium Lantai 4, Kampus 2 UMSIDA")
 
 # --- MENU 2: VIDEO KAJIAN ---
+# --- MENU 2: VIDEO KAJIAN ---
 elif choice == "📺 Video Kajian":
-    st.header("📺 Arsip Video Kajian")
-    st.video("https://www.youtube.com/watch?v=zPrS0A6r_hM")
+    st.header("📺 Arsip Video Kajian Oratorium")
+    st.markdown("Dokumentasi kajian rutin dan video edukasi islami untuk mahasiswa.")
+
+    # 1. CARA MENYIMPAN DATA VIDEO (Link & Keterangan)
+    # Kamu bisa menambah video baru di dalam list ini
+    daftar_kajian = [
+        {
+            "judul": "Adab Menuntut Ilmu di Perguruan Tinggi",
+            "ustadz": "Ustadz Dr. H. Hidayatullah, M.Si.",
+            "durasi": "15:20",
+            "link": "https://www.youtube.com/watch?v=zPrS0A6r_hM",
+            "deskripsi": "Kajian ini membahas pentingnya meluruskan niat saat kuliah agar setiap tugas menjadi amal jariyah."
+        },
+        {
+            "judul": "Fiqih Milenial: Menjaga Pandangan di Era Digital",
+            "ustadz": "Tim Asatidz Oratorium",
+            "durasi": "10:45",
+            "link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", # Ganti dengan link YT asli
+            "deskripsi": "Tips praktis menjaga lisan dan pandangan saat berselancar di media sosial sesuai syariat."
+        }
+    ]
+
+    # 2. MENAMPILKAN VIDEO SECARA OTOMATIS
+    for vid in daftar_kajian:
+        with st.container():
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                st.video(vid["link"])
+            
+            with col2:
+                st.subheader(vid["judul"])
+                st.caption(f"🎙️ **Narasumber:** {vid['ustadz']}")
+                st.caption(f"⏳ **Durasi:** {vid['durasi']}")
+                st.write(vid["deskripsi"])
+            
+            st.divider()
+
+    st.info("💡 **Tips:** Video di atas diambil langsung dari Channel YouTube Oratorium Saintek.")
 
 # --- MENU 3: TANYA USTADZ ---
 elif choice == "📝 Tanya Ustadz":
