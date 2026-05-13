@@ -69,6 +69,20 @@ if choice == "🏠 Home & Materi":
                 <p style="color:#5f6368; font-size:15px;">Edukasi pentingnya akhlakul karimah dalam berinteraksi di ruang virtual guna mewujudkan internet sehat.</p>
             </div>
         """, unsafe_allow_html=True)
+        with col3:
+        st.markdown("""
+            <div class="materi-card" style="border-top-color: #3498db;">
+                <h3 style="color:#3498db;">🚿 Thaharah</h3>
+                <p style="color:#5f6368; font-size:15px;">Kupas tuntas tata cara bersuci, wudhu, dan tayamum yang benar sebagai kunci utama sahnya ibadah salat.</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown("""
+            <div class="materi-card" style="border-top-color: #9b59b6;">
+                <h3 style="color:#9b59b6;">💰 Zakat & Infaq</h3>
+                <p style="color:#5f6368; font-size:15px;">Memahami pengelolaan harta melalui zakat mal, fitrah, dan infaq untuk pemberdayaan umat di lingkungan kampus.</p>
+            </div>
+        """, unsafe_allow_html=True)
 
     st.write("---")
     
