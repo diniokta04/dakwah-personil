@@ -33,6 +33,14 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# Fungsi untuk memuat data CSV
+DB_FILE = "data_dakwah.csv"
+def load_data():
+    if os.path.exists(DB_FILE):
+        try: return pd.read_csv(DB_FILE)
+        except: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
+    else: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
+
 # 3. SIDEBAR NAVIGATION
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3004/3004613.png", width=100)
@@ -111,39 +119,77 @@ elif choice == "📺 Video Kajian":
 
 # --- MENU 3: TANYA USTADZ ---
 elif choice == "📝 Tanya Ustadz":
-    st.header("📝 Form Tanya Ustadz")
-    st.write("Ajukan pertanyaan seputar hukum Islam. Identitas Anda aman dalam database kami.")
+    st.header("📝 Layanan Konsultasi Agama")
     
-    DB_FILE = "data_dakwah.csv"
-    
-    def load_data():
-        if os.path.exists(DB_FILE):
-            try: return pd.read_csv(DB_FILE)
-            except: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
-        else: return pd.DataFrame(columns=["Waktu", "Nama", "Kontak", "Pertanyaan"])
+    # Pilih mode: User (Kirim Pertanyaan) atau Admin (Balas Pertanyaan)
+    tabs = st.tabs(["📤 Kirim Pertanyaan", "🔑 Panel Admin"])
 
-    with st.form(key='tanya_form', clear_on_submit=True):
-        nama = st.text_input("Nama Lengkap")
-        kontak = st.text_input("Nomor WhatsApp (Aktif)")
-        pertanyaan = st.text_area("Tulis Pertanyaan Anda secara detail")
-        submit = st.form_submit_button("Kirim ke Ustadz")
+    # --- TAB 1: USER (Kirim Pertanyaan) ---
+    with tabs[0]:
+        st.write("Silakan ajukan pertanyaan Anda. Jawaban akan dikirimkan oleh tim Asatidz melalui WhatsApp.")
+        with st.form(key='tanya_form', clear_on_submit=True):
+            nama = st.text_input("Nama Lengkap")
+            kontak = st.text_input("Nomor WhatsApp (Contoh: 08123xxx)")
+            pertanyaan = st.text_area("Tulis Pertanyaan Anda")
+            submit = st.form_submit_button("Kirim ke Ustadz")
 
-    if submit:
-        if nama and pertanyaan:
-            new_data = {
-                "Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "Nama": nama, "Kontak": kontak, "Pertanyaan": pertanyaan
-            }
-            df = load_data()
-            df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
-            df.to_csv(DB_FILE, index=False)
-            st.success("✅ Alhamdulillah, pertanyaan Anda telah masuk ke sistem Oratorium Saintek!")
-            st.rerun()
-        else:
-            st.error("⚠️ Mohon lengkapi Nama dan Pertanyaan.")
+        if submit:
+            if nama and pertanyaan and kontak:
+                new_data = {
+                    "Waktu": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "Nama": nama, 
+                    "Kontak": kontak, 
+                    "Pertanyaan": pertanyaan
+                }
+                df = load_data()
+                df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
+                df.to_csv(DB_FILE, index=False)
+                st.success("✅ Alhamdulillah, pertanyaan Anda telah masuk ke sistem Oratorium Saintek!")
+            else:
+                st.error("⚠️ Mohon lengkapi semua kolom.")
 
-    st.divider()
-    st.subheader("📊 Monitoring Database Pertanyaan (Admin Only)")
-    df_display = load_data()
-    if not df_display.empty:
-        st.dataframe(df_display, use_container_width=True)
+    # --- TAB 2: ADMIN (Melihat & Membalas) ---
+    with tabs[1]:
+        st.subheader("🔑 Login Admin Oratorium")
+        password = st.text_input("Masukkan Password Admin", type="password")
+        
+        # Password default: admin123
+        if password == "admin123":
+            st.success("Akses Diterima. Marhaban, Admin!")
+            df_admin = load_data()
+            
+            if not df_admin.empty:
+                # Statistik Sederhana
+                total_user = len(df_admin)
+                st.metric("Total User Bertanya", f"{total_user} Orang")
+                
+                st.divider()
+                st.write("### Daftar Pertanyaan Masuk")
+                
+                # Menampilkan data satu per satu agar bisa dibalas
+                for index, row in df_admin.iterrows():
+                    with st.expander(f"Dari: {row['Nama']} ({row['Waktu']})"):
+                        st.write(f"**Pertanyaan:**\n{row['Pertanyaan']}")
+                        st.write(f"**Kontak:** {row['Kontak']}")
+                        
+                        # Logika format nomor WhatsApp (08... -> 628...)
+                        wa_number = str(row['Kontak'])
+                        if wa_number.startswith('0'):
+                            wa_number = '62' + wa_number[1:]
+                        elif wa_number.startswith('8'):
+                            wa_number = '62' + wa_number
+                        
+                        pesan_wa = f"Assalamualaikum {row['Nama']}, saya Admin DigiDakwah Oratorium Saintek UMSIDA. Menjawab pertanyaan Anda mengenai: '{row['Pertanyaan'][:30]}...' "
+                        wa_link = f"https://wa.me/{wa_number}?text={pesan_wa}"
+                        
+                        st.markdown(f"""
+                            <a href="{wa_link}" target="_blank">
+                                <button style="background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: auto;">
+                                    💬 Balas via WhatsApp
+                                </button>
+                            </a>
+                        """, unsafe_allow_html=True)
+            else:
+                st.info("Belum ada pertanyaan masuk.")
+        elif password != "":
+            st.error("Password salah!")
